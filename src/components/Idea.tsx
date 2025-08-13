@@ -85,8 +85,8 @@ type IdeaType = {
   pattern: string;
   pitch: string;
   tagline?: string;
-  alt_spellings?: string[];
-  rationale?: string;
+  alt_spellings: string[];
+  rationale: string;
 };
 
 export default function Idea() {
@@ -182,11 +182,16 @@ export default function Idea() {
       if (!text) {
         // 🧹 Fallback: collect all text parts if output_text isn't present
         try {
-          const chunks = [];
-          for (const item of data.output || []) {
-            for (const c of item.content || []) {
-              if (typeof c.text === "string") chunks.push(c.text);
-              if (c.type === "output_text" && typeof c.text === "string") chunks.push(c.text);
+          type ResponseContent = { type: string; text?: string };
+          type ResponseOutputItem = { content?: ResponseContent[] };
+
+          const chunks: string[] = [];
+          for (const item of (data.output || []) as ResponseOutputItem[]) {
+            if (item.content && Array.isArray(item.content)) {
+              for (const c of item.content) {
+                if (typeof c.text === "string") chunks.push(c.text);
+                if (c.type === "output_text" && typeof c.text === "string") chunks.push(c.text);
+              }
             }
           }
           text = chunks.join("\n");
@@ -208,8 +213,12 @@ export default function Idea() {
       }
 
       setIdeas(parsed.ideas);
-    } catch (e: any) {
-      setError(e?.message || String(e));
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError(String(e));
+      }
     } finally {
       setLoading(false);
     }
