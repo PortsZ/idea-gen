@@ -121,11 +121,11 @@ export default function Idea() {
   );
 
   const patternLabels = {
-    xification: "X‑ification (enshittification-esque)",
-    uberFor: "The Uber‑for / X‑for‑Y",
+    xification: "X-ification (enshittification-esque)",
+    uberFor: "The Uber-for / X-for-Y",
     gamification: "Gamification",
     portmanteau: "Portmanteau",
-    suffixer: "Suffixer (‑ify, ‑verse, ‑stack…)",
+    suffixer: "Suffixer (-ify, -verse, -stack…)",
     verbify: "Verbify (noun → verb)",
     inventAffix: "Invent a new affix"
   } as const;
@@ -158,7 +158,7 @@ export default function Idea() {
       const client = new OpenAI({ apiKey, dangerouslyAllowBrowser: true }); // 🙈 demo only — do NOT ship keys in prod
       const data = await client.responses.create(
         {
-          model: "o4-mini",
+          model: "o3",
           temperature: 1,
           max_output_tokens: 10000,
           text: {
